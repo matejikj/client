@@ -34,14 +34,98 @@
         <v-col cols="12" md="3">
           <v-combobox
             v-model="selectedColumns"
-            :items="headers.map(item => item.text)"
-            label="I use chips"
+            :items="headers.map((item) => item.text)"
+            label="Select columns for transformations"
             multiple
             chips
             @change="comboboxChanged"
           ></v-combobox>
         </v-col>
-        <v-col cols="12" md="9"> </v-col>
+        <v-col cols="12" md="9">
+          <v-card elevation="3">
+            <v-container v-if="this.selectedColumns.length === 1">
+              <v-subheader>Filter</v-subheader>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="ignoreCheckbox"
+                    label="ignore"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="dropnaCheckbox"
+                    label="dropna"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="timeseriesCheckbox"
+                    label="timeseries"
+                  ></v-checkbox>
+                </v-col>
+              </v-row>
+              <v-subheader>Transform</v-subheader>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-combobox
+                    v-model="selectedTarget"
+                    :items="headers.map((item) => item.text)"
+                    label="select target column"
+                  ></v-combobox>
+                </v-col>
+              </v-row>
+
+              <v-subheader>Target</v-subheader>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-combobox
+                    v-model="selectedTarget"
+                    :items="headers.map((item) => item.text)"
+                    label="select target column"
+                  ></v-combobox>
+                </v-col>
+              </v-row>
+              <v-subheader>Grouping</v-subheader>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-combobox
+                    v-model="selectedTarget"
+                    :items="headers.map((item) => item.text)"
+                    label="select target column"
+                  ></v-combobox>
+                </v-col>
+                <v-text-field
+                  v-model="groupingPeriod"
+                  label="grouping period"
+                ></v-text-field>
+              </v-row>
+            </v-container>
+            <v-container v-if="this.selectedColumns.length > 1">
+              <v-subheader>Filter</v-subheader>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="ignoreCheckbox"
+                    label="ignore"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="dropnaCheckbox"
+                    label="dropna"
+                  ></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="timeseriesCheckbox"
+                    label="timeseries"
+                  ></v-checkbox>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
       </v-row>
     </v-container>
   </body>
@@ -62,14 +146,20 @@ export default {
     // columns: [],
     headers: [],
     selectedColumns: [],
-    parsed: false
+    selectedTarget: "",
+    parsed: false,
+    ignoreCheckbox: false,
+    dropnaCheckbox: false,
+    timeseriesCheckbox: false,
+    dataTypes: ["double", "int", "str"],
+    selectedDataType: "",
   }),
   computed: {},
   methods: {
     downloadConfig() {
-      var fileName = "config.json";
+      const fileName = "config.json";
       // Create a blob of the data
-      var fileToSave = new Blob([JSON.stringify(this.config)], {
+      const fileToSave = new Blob([JSON.stringify(this.config)], {
         type: "application/json",
       });
 
@@ -108,8 +198,18 @@ export default {
       });
     },
     comboboxChanged() {
-      console.log()
-    }
+      switch (this.selectedColumns.length) {
+        case 0:
+          console.log(0);
+          break;
+        case 1:
+          console.log(1);
+          break;
+        default:
+          console.log(10);
+          break;
+      }
+    },
   },
 };
 </script>
