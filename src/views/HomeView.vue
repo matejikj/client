@@ -83,7 +83,7 @@
                 </v-col>
                 <v-col cols="12" sm="2">
                   <v-btn v-if="addingOperation" @click="addOperation">
-                    Add
+                    Add new transformation
                   </v-btn>
                 </v-col>
               </v-row>
@@ -95,7 +95,7 @@
                   <v-row>
                     <v-col cols="12" sm="12"
                       >{{ transformation.type }}
-                      <v-btn @click="removeItem(index)" fab x-small
+                      <v-btn @click="removeItem(index)" fab x-small color="red"
                         >-</v-btn
                       ></v-col
                     >
@@ -159,7 +159,7 @@
                       <v-row>
                         <v-col>
                           <v-btn @click="addReplace(transformation.values)">
-                            Add
+                            Add another values
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -217,7 +217,7 @@
                       <v-row>
                         <v-col>
                           <v-btn @click="addIsIn(transformation.values)">
-                            Add
+                            Add another values
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -272,6 +272,9 @@
             <v-btn @click="exampleRequest()">Example</v-btn>
           </v-card>
         </v-col>
+      </v-row>
+      <v-row>
+        {{ exampleResult }}
       </v-row>
       <v-row>
         <v-col cols="12" md="12">
@@ -334,6 +337,7 @@ export default {
     exampleFirstLines: [],
     // columns: [],
     exampleHeaders: [],
+    exampleResult: '',
     firstLines: [],
     // columns: [],
     headers: [],
@@ -448,9 +452,13 @@ export default {
       }
     },
     configFileChanged() {
-      const reader = new FileReader();
-      reader.onload = (e) => this.setConfig(e);
-      reader.readAsText(this.configFile);
+      if (this.file === undefined) {
+        alert('First insert dataset')
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => this.setConfig(e);
+        reader.readAsText(this.configFile);
+      }
     },
     downloadConfig() {
       const fileName = "config.json";
@@ -518,6 +526,9 @@ export default {
             API + "/download?filename=" + encodeURIComponent(res.data.dataset);
           console.log(fileUrl);
           axios.get(fileUrl).then((result) => {
+            this.exampleFirstLines = []
+            this.exampleHeaders = []
+            this.exampleResult = ''
             Papa.parse(result.data, {
               header: true,
               step: function (row) {
@@ -539,7 +550,9 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          this.exampleFirstLines = []
+          this.exampleHeaders = []
+          this.exampleResult = err.response.data.message + ' Detail: ' + err.response.data.detail
         });
     },
     removeItem(index) {
