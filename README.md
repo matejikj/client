@@ -22,3 +22,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+ulozit a vlozit json configu
+provest check configu
+vyohdit id, timeseries nahoru
+pridat veschny funkce
